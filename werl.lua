@@ -379,13 +379,7 @@ end
 --<<End of functions>>--
 
 --LLEXER
-
-if string.find(args[1], ".werl" then
-else
-    print("Unsupported file type")
-    return
-end
-local Thread = io.open(args[1], "r"):read("*a"):gsub("if", "&if"):gsub("function", "@function")
+local Thread = io.open("ballz.werl", "r"):read("*a"):gsub("if", "&if"):gsub("function", "@function")
 local words = {}
 local currentWord = ""
 local isParameter = false
