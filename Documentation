@@ -1,0 +1,168 @@
+------Siple output------
+output("Hello World") -> "Hello World"
+
+------Simple error(output but in red text!)------
+error("Hello World") -> "Hello World"(In Red Text!)
+
+------Define variables------
+define x = "Hello World";
+
+------Accessing variables------
+define x = "Hello World";
+output({x}) -> "Hello World"
+
+------Maths with variables------
+define x = 1+2; -> 3
+This also works with -(Subtraction) and *(Multiply) and /(Divison)
+
+------Concrete a string------
+define x = "Hello ", "World"
+output({x}) -> "Hello World"
+
+------If statements------
+define x = 1;
+if ({x} == 1)[
+  output("X = 1")
+] -> outputs: "X = 1" but only if a certain condition is met for example: {x} = "1"
+
+There is also if not statements which is used like this:
+
+define x = "1";
+if ({x} != "4")[
+  output("X is not equal to 4")
+] -> outputs: "X is not equal to 4" but only if a certain condition is not met so for example x is not equal to 4
+
+------Decalreing variable------
+So werl is a programing language that does not import a variable in to the source if it is not being used which sounds weird i know but this is to save memory usage. So lets say that you wan't to force a variable. That can be done with the declare token. Here is a example:
+
+define x = "Hello World!";
+declare({x})
+
+That will force the variable in to the memory of werl!
+
+
+------Built In variables------
+You can also access a few built in werl variables such as:
+{math.pi} -> Gives you a few digits of pi
+{werl.version} -> Gives you the version of werl that you are using!
+{math.hugeNum} -> Gives you a really big number!
+
+------Import Lua------
+This is a feature for if you want to import lua code in to werl and can be used like this:
+importLua("File") -> Loads lua script from file(Note: Do not use extenstions in the string)
+
+Please note that when working with outputting functions such as: output or error then if you Concrete a string value with a number value it will automatically make the number to a string!
+
+
+
+------Modifying the Werl source------
+
+You might need some knowledge of lua to continue here!
+
+--Custom Tokens--
+
+So lets say you wan't to add a custom token to werl(Token is something like for example: output) you would do:
+
+First open werl2.lua and hit ctrl+f and search for #1. You should be brought to a table/array at the bottom of the table add a "," so it will look something like this. Do not remove any tokens that were there before(You can change their name though):
+
+local lTokens = { --Local Tokens(Tokes that exist in the programing language) #1
+  "output",
+  "error",
+  "define",
+  "importLua",
+  "if",
+  "declare",
+  "test" --This is our new token
+}
+
+Now we have our token inside werl but it is not in use at the moment so lets change that!
+
+Now hit ctrl+f again and search for #2.
+
+You should be brought to something looking like this:
+--Adding session tokens #2
+for i,v in pairs(words) do
+    if v == lTokens[1] or v == lTokens[2] or v == lTokens[4] or v == lTokens[6] then
+        table.insert(sTokens, v .. ":" .. removeParameters(words[count+1]))
+    end
+    count = count+1
+end
+
+Now we need to get the location of our token in the table/array In my case test is number 7 in the array. So to add it we can do:
+
+--Adding session tokens #2
+for i,v in pairs(words) do
+    if v == lTokens[1] or v == lTokens[2] or v == lTokens[4] or v == lTokens[6] or lTokens[7] --[[That is my token]] then
+        table.insert(sTokens, v .. ":" .. removeParameters(words[count+1]))
+    end
+    count = count+1
+end
+
+Now werl recognises the token but there is one last step to make it work!
+
+hit ctrl+f again and search for #3.
+
+And you should be brought to a large if statement and right before the second end add a elseif statement that looks like this:
+
+elseif split[1] == lTokens[7] then --lTokens[7] is the token
+--Your code  
+
+keep in mind that if your token should have a argument like for example: output("Hello") then that argument is located at split[2] so if you wanted to make a output token this is how you would do it:
+
+elseif split[1] == lTokens[7] then --lTokens[7] is the token
+  print(split[2]) --Print is a native lua function
+
+And now if you want to add variables to your token you can do:
+
+elseif split[1] == lTokens[7] then
+        if string.find(split[2], "{") and not string.find(split[2], '"') and not string.find(split[2], "'") then
+            for a,b in pairs(variables) do
+                if split[2] == "{" .. SplitVar(b)[1] .. "}" then
+                    local sV = SplitVar(b)[2]
+                    print(removeParameters(sV))
+                end
+            end
+        else
+          print(split[2])
+        end
+
+--Custom built in variables--
+
+This is actually very easy to achive. Simply hit ctrl+f and search for #4
+
+You should be greeted with something like this:
+
+local variables = { --All variables are stored here! #4
+  'VAR:math.pi="' .. math.pi .. '";',
+  'VAR:math.hugeNum=9999999999999999999;',
+  'VAR:werl.version="V' .. version .. '";'
+}
+
+The variable structure of werl looks like this:
+VAR:NAME=VALUE;
+
+Some if you want to add a custom built in variable you need to add a "," at the last line and drop down and then add your variable. So it will look something like this:
+
+local variables = { --All variables are stored here! #4
+  'VAR:math.pi="' .. math.pi .. '";',
+  'VAR:math.hugeNum=9999999999999999999;',
+  'VAR:werl.version="V' .. version .. '";',
+  'VAR:TEST="TEST";'
+}
+
+Now if we do:
+
+output({TEST})
+It will print the value of the variable.
+
+Keep in mind that you do not have to have static values and you could do something like this:
+
+local dailyMessage = "Hello"
+
+local variables = { --All variables are stored here! #4
+  'VAR:math.pi="' .. math.pi .. '"',
+  'VAR:math.hugeNum=9999999999999999999',
+  'VAR:werl.version="V' .. version .. '"',
+  'VAR:TEST="' .. dailyMessage .. '"'
+}
+Now output({TEST}) will output the value of dailyMessage.
