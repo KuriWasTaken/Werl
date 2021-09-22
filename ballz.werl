@@ -1,1 +1,4 @@
-
+define x = "Ur Mom Lol";
+if({x} == "Ur Mom Lol")[
+  output("Indeed ur mom lol")
+]
