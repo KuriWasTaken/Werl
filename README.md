@@ -1,6 +1,6 @@
 # Werl
 Werl Is a half done programing language written in lua
-Please don't steal my code, use it as a source of learning or just modify it to fit your needs.
+Please don't steal my code and rebranding it as your own without making any changes, use it as a source of learning or just modify it to fit your needs.
 
 Need to fix:
 For some reason sometimes if statements are not working.
@@ -11,3 +11,5 @@ Also for some reason "arg[1]" is not working in lua. Might have something to do 
 I should also make the code a bit prettier by making functions in to separate files.
 
 I also gotta add if else statements. Should hopefully be pretty easy
+
+Also please give me credits if you make your own version of werl!
